@@ -210,27 +210,17 @@
 - name: "MEDIUM | RHEL-07-010200 | PATCH | The PAM system service must be configured to store only encrypted representations of passwords."
   pamd:
       name: system-auth
-      state: args_present
+      state: "{{ item.state }}"
       type: password
       control: sufficient
       module_path: pam_unix.so
-      module_arguments:
+      module_arguments: "{{ item.args }}"
+  with_items:
+      - state: args_present
+        args:
           - "sha512"
-  tags:
-      - cat2
-      - medium
-      - patch
-      - RHEL-07-010200
-      - pamd
-
-- name: "MEDIUM | RHEL-07-010200 | PATCH | The PAM system service must be configured to store only encrypted representations of passwords."
-  pamd:
-      name: system-auth
-      state: args_absent
-      type: password
-      control: sufficient
-      module_path: pam_unix.so
-      module_arguments:
+      - state: args_absent
+        args:
           - "md5"
           - "bigcrypt"
           - "sha256"
